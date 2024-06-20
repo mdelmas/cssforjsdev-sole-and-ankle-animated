@@ -2,28 +2,60 @@ import React from "react";
 import styled from "styled-components/macro";
 import { WEIGHTS } from "../../constants";
 
-const NavLink = ({ href, children }) => {
-  return (
-    <LinkWrapper href={href}>
+export const Effects = {
+  FLIPUP: 0,
+  FILL: 1,
+};
+
+const NavLink = ({ href, effect = Effects.FLIPUP, children }) => {
+  return effect === Effects.FILL ? (
+    <FlipUpWrapper href={href}>
       <NormalText>{children}</NormalText>
-      <HoverText>{children}</HoverText>
-    </LinkWrapper>
+      <HoverText aria-hidden={true}>{children}</HoverText>
+    </FlipUpWrapper>
+  ) : (
+    <FillWrapper href={href}>{children}</FillWrapper>
   );
 };
 
-const LinkWrapper = styled.a`
+const Wrapper = styled.a`
   font-size: 1.125rem;
   text-transform: uppercase;
   text-decoration: none;
   color: var(--color-gray-900);
   font-weight: ${WEIGHTS.medium};
 
-  overflow: hidden;
-  position: relative;
-
   &:first-of-type {
     color: var(--color-secondary);
   }
+`;
+
+const FillWrapper = styled(Wrapper)`
+  background-image: linear-gradient(
+    to left,
+    var(--color-gray-900),
+    var(--color-gray-900) 50%,
+    var(--color-gray-700) 50%
+  );
+  background-size: 200% 100%;
+  background-position: -100%;
+  background-clip: text;
+  color: transparent;
+
+  transition: background-position 600ms ease-in;
+
+  @media (prefers-reduced-motion: no-preference) {
+    &:hover,
+    &:focus {
+      background-position: 0%;
+      transition: background-position 200ms ease-out;
+    }
+  }
+`;
+
+const FlipUpWrapper = styled(Wrapper)`
+  overflow: hidden;
+  position: relative;
 `;
 
 const Text = styled.span`
@@ -31,14 +63,18 @@ const Text = styled.span`
 
   transition: transform 600ms;
 
-  ${LinkWrapper}:hover & {
-    transition: transform 200ms;
+  @media (prefers-reduced-motion: no-preference) {
+    ${FlipUpWrapper}:hover & {
+      transition: transform 200ms;
+    }
   }
 `;
 
 const NormalText = styled(Text)`
-  ${LinkWrapper}:hover & {
-    transform: translateY(-100%);
+  @media (prefers-reduced-motion: no-preference) {
+    ${FlipUpWrapper}:hover & {
+      transform: translateY(-100%);
+    }
   }
 `;
 
@@ -51,8 +87,10 @@ const HoverText = styled(Text)`
 
   transform: translateY(100%);
 
-  ${LinkWrapper}:hover & {
-    transform: translateY(0%);
+  @media (prefers-reduced-motion: no-preference) {
+    ${FlipUpWrapper}:hover & {
+      transform: translateY(0%);
+    }
   }
 `;
 
