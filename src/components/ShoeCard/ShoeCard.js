@@ -133,6 +133,18 @@ const Flag = styled.div`
   font-weight: ${WEIGHTS.bold};
   color: var(--color-white);
   border-radius: 2px;
+
+  transition: filter 1200ms, transform 800ms;
+  transform-origin: 0% 90%;
+  filter: brightness(100%);
+
+  @media (prefers-reduced-motion: no-preference) {
+    ${Link}:hover &, ${Link}:focus & {
+      filter: brightness(120%);
+      transform: scale(1.05);
+      transition: filter 800ms, transform 400ms;
+    }
+  }
 `;
 
 const SaleFlag = styled(Flag)`
