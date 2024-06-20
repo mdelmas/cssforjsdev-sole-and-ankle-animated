@@ -83,12 +83,16 @@ const ImageWrapper = styled.div`
 const Image = styled.img`
   display: block;
   width: 100%;
+
   transition: transform 500ms;
   transform-origin: 50% 70%;
+  will-change: transform;
 
-  ${Link}:hover &, ${Link}:focus & {
-    transform: scale(1.1);
-    transition: transform 200ms;
+  @media (prefers-reduced-motion: no-preference) {
+    ${Link}:hover &, ${Link}:focus & {
+      transform: scale(1.1);
+      transition: transform 200ms;
+    }
   }
 `;
 
