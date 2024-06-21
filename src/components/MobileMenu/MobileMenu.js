@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
+import React, { Children } from "react";
 import styled, { keyframes } from "styled-components/macro";
 import { DialogOverlay, DialogContent } from "@reach/dialog";
 
@@ -10,6 +10,7 @@ import Icon from "../Icon";
 import VisuallyHidden from "../VisuallyHidden";
 
 const MobileMenu = ({ isOpen, onDismiss }) => {
+  let navLinkCount = 0;
   return (
     <Overlay isOpen={isOpen} onDismiss={onDismiss}>
       <Content aria-label="Menu">
@@ -19,12 +20,24 @@ const MobileMenu = ({ isOpen, onDismiss }) => {
         </CloseButton>
         <Filler />
         <Nav>
-          <NavLink href="/sale">Sale</NavLink>
-          <NavLink href="/new">New&nbsp;Releases</NavLink>
-          <NavLink href="/men">Men</NavLink>
-          <NavLink href="/women">Women</NavLink>
-          <NavLink href="/kids">Kids</NavLink>
-          <NavLink href="/collections">Collections</NavLink>
+          <MobileNavLink href="/sale" linkPosition={++navLinkCount}>
+            Sale
+          </MobileNavLink>
+          <MobileNavLink href="/new" linkPosition={++navLinkCount}>
+            New Releases
+          </MobileNavLink>
+          <MobileNavLink href="/men" linkPosition={++navLinkCount}>
+            Men
+          </MobileNavLink>
+          <MobileNavLink href="/women" linkPosition={++navLinkCount}>
+            Women
+          </MobileNavLink>
+          <MobileNavLink href="/kids" linkPosition={++navLinkCount}>
+            Kids
+          </MobileNavLink>
+          <MobileNavLink href="/collections" linkPosition={++navLinkCount}>
+            Collections
+          </MobileNavLink>
         </Nav>
         <Footer>
           <SubLink href="/terms">Terms and Conditions</SubLink>
@@ -36,6 +49,14 @@ const MobileMenu = ({ isOpen, onDismiss }) => {
   );
 };
 
+const MobileNavLink = ({ href, linkPosition, children }) => {
+  return (
+    <NavLink href={href} linkPosition={linkPosition}>
+      {children}
+    </NavLink>
+  );
+};
+
 const backgroundFadeIn = keyframes`
   from {
     background: hsl(${COLORS.gray[700]} / 0.2);
@@ -43,18 +64,6 @@ const backgroundFadeIn = keyframes`
   to {
     background: hsl(${COLORS.gray[700]} / 0.8);
   }
-`;
-
-const Overlay = styled(DialogOverlay)`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: flex-end;
-
-  animation: ${backgroundFadeIn} 300ms ease-out both;
 `;
 
 const slideRight = keyframes`
@@ -75,6 +84,23 @@ const contentFadeIn = keyframes`
   }
 `;
 
+const Overlay = styled(DialogOverlay)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  background: hsl(${COLORS.gray[700]} / 0.8);
+
+  animation: ${contentFadeIn} 300ms ease-out both;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ${backgroundFadeIn} 300ms ease-out both;
+  }
+`;
+
 const Content = styled(DialogContent)`
   background: white;
   width: 300px;
@@ -83,11 +109,13 @@ const Content = styled(DialogContent)`
   display: flex;
   flex-direction: column;
 
-  animation: ${slideRight} 400ms cubic-bezier(0.7, 0, 0.55, 1.1) both;
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ${slideRight} 400ms cubic-bezier(0.7, 0, 0.55, 1.1) both;
 
-  & * {
-    animation: ${contentFadeIn} 300ms ease-in-out both;
-    animation-delay: 150ms;
+    & * {
+      animation: ${contentFadeIn} 300ms ease-in-out both;
+      animation-delay: 150ms;
+    }
   }
 `;
 
@@ -114,6 +142,11 @@ const NavLink = styled.a`
   &:first-of-type {
     color: var(--color-secondary);
   }
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ${contentFadeIn} 300ms ease-in-out both;
+    animation-delay: ${(props) => props.linkPosition * 50 + 300}ms;
+  }
 `;
 
 const Filler = styled.div`
@@ -125,6 +158,11 @@ const Footer = styled.footer`
   flex-direction: column;
   gap: 14px;
   justify-content: flex-end;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ${contentFadeIn} 300ms ease-in-out both;
+    animation-delay: 600ms;
+  }
 `;
 
 const SubLink = styled.a`
